@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:first_flutter/AppNavigator.dart';
 import 'package:first_flutter/app/app.dart';
@@ -7,7 +8,9 @@ import 'package:first_flutter/pages/second_page.dart';
 import 'package:first_flutter/utility/button.dart';
 import 'package:first_flutter/utility/creator.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './MixinTest.dart';
 
@@ -16,38 +19,21 @@ class FirstPage extends StatefulWidget with MixinTest {
   FirstPageState createState() => FirstPageState();
 }
 
-class FirstPageState extends State<FirstPage> {
+class FirstPageState extends State<FirstPage> with TickerProviderStateMixin {
   int _count = 0;
   String value = '';
-  StreamController _controller;
-  Stream _stream;
-  Stream _eventStream;
-  StreamSink _sink;
+  TabController _controller;
+  List<String> _tabs = ['One', 'Two'];
+  bool _ignore = false;
 
   @override
   void initState() { 
     super.initState();
-    _controller = StreamController(
-      onListen: () {
-
-      },
-      onCancel: () {
-
-      },
-      onPause: () {
-        
-      },
-      onResume: () {
-
-      },
-    );
-    _stream = _controller.stream;
-    _sink = _controller.sink;
+    _controller = TabController(length: _tabs.length, vsync: this);
   }
 
   @override
   void dispose() { 
-    _controller.close();
     super.dispose();
   }
 
@@ -66,59 +52,84 @@ class FirstPageState extends State<FirstPage> {
     setState(() {});
   }
 
-  @override
-  Widget build(BuildContext contexts) {
-    return ScopedModelDescendant(builder: (context, child, AppModel model) {
-      return Scaffold(
-          drawerEdgeDragWidth: 50,
-          drawerScrimColor: Colors.orange,
-          drawer: Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Colors.lightBlueAccent,
-                  ),
-                  duration: Duration(seconds: 3),
-                  child: Center(
-                    child: SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: CircleAvatar(
-                        child: Text('L'),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+  _buildSlideTestView() {
+    Random rand = Random();
+    Widget w =  IgnorePointer(
+        ignoring: _ignore,
+        child: GestureDetector(
+          onTap: () {},
+          dragStartBehavior: DragStartBehavior.start,
+          onHorizontalDragUpdate: (DragUpdateDetails details) {
+            if (details.delta.dx > 0.0) {
+              setState(() {
+                _ignore = true;
+              });
+            }
+            print('update details.localPosition ==== ${details.localPosition} == ${details.delta} == ${details.primaryDelta}');
+          },
+          onHorizontalDragEnd: (DragEndDetails details) {
+            setState(() {
+              _ignore = false;
+            });
+          },
+          child: Container(
+            height: 50,
+            color: Color.fromRGBO(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255), 1),
+            alignment: Alignment.center,
+            child: createText('手势冲突测试', style: TextStyle(color: Colors.white)), 
+          ), 
+        ));
+    return ListView.builder(
+      itemBuilder: (context, index) => CustomScrollView(
+        scrollDirection: Axis.horizontal,
+        slivers: <Widget>[
+          SliverToBoxAdapter(
+            child: Container(
+              width: MediaQuery.of(context).size.width, 
+              color: Colors.orange,
+              child: createText('手势冲突测试', style: TextStyle(color: Colors.white)),
             ),
           ),
-          backgroundColor: Colors.lightBlue,
-          body: Stack(
-            children: <Widget>[
-              Center(
-                child: Container(
-                  width: 150,
-                  height: 100,
-                  child: Builder(builder: (BuildContext context) => Column(
-                    children: <Widget>[
-                      Button(
-                          child: createText('按就完事了'),
-                          onPressed: () {
-                            AppNavigator.push(context, SecondPage());
-                          }),
-                    ],
-                  )),
-                ),
+          SliverToBoxAdapter(
+            child: Container(
+              color: Colors.red,
+              width: 40,
+              child: createText('Delete'),
+            ), 
+          )
+        ],
+      ), 
+      itemCount: 5, 
+      itemExtent: 50,
+    );
+  }
+
+  @override
+  Widget build(BuildContext contexts) {
+    List<Tab> tabs = _tabs.map((e) => Tab(text: e)).toList();
+    return ScopedModelDescendant(builder: (context, child, AppModel model) {
+      return Scaffold(
+        appBar: createAppBar(context: context, title: 'Main'), 
+        body: Column(
+          children: <Widget>[
+            TabBar(
+              controller: _controller,
+              tabs: tabs,  
+              unselectedLabelColor: Colors.black87,
+              labelColor: Colors.purple,
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _controller,
+                children: <Widget>[
+                  Container(color: Colors.green),
+                  _buildSlideTestView()
+                ], 
               ),
-              value.length != 0
-                  ? AlertDialog(
-                      title: createText(value,
-                          style: TextStyle(fontSize: 15, color: Colors.red)))
-                  : Container(),
-            ],
-          ));
+            ),
+          ], 
+        ),
+      );
     });
   }
 }
