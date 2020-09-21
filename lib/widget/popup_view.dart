@@ -55,15 +55,9 @@ class _PopupScaleTransitionState extends State<PopupScaleTransition> with Ticker
 
   @override
   void initState() {
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 250));
+    controller = AnimationController(vsync: this, duration: Duration(seconds: 1));
     closeController = AnimationController(vsync: this, duration: Duration(milliseconds: 250));
-    scaleAnimation = Tween(begin: 0.9, end: 1.1).animate(controller)..addListener(() {
-      print('${scaleAnimation.value}');
-    })..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        controller.reverse();
-      }
-    });
+    scaleAnimation = Tween(begin: 0.7, end: 1.0).animate(CurvedAnimation(parent: controller, curve: Curves.elasticOut));
     
     closeAnimation = Tween(begin: 1.1, end: 0.001).animate(closeController)..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -71,7 +65,7 @@ class _PopupScaleTransitionState extends State<PopupScaleTransition> with Ticker
       }
     });
 
-    opacityAnimation = Tween(begin: 1.0, end: 0.001).animate(closeController)..addListener(() { setState(() {}); });
+    opacityAnimation = Tween(begin: 1.0, end: 0.0).animate(closeController);
 
     startAnimate();
     super.initState();
@@ -93,8 +87,8 @@ class _PopupScaleTransitionState extends State<PopupScaleTransition> with Ticker
   Widget build(BuildContext context) {
     Animation scaleAnim = animationState == PopupAnimationState.close ? closeAnimation : scaleAnimation;
     return Material(
-      child: Opacity(
-        opacity: opacityAnimation.value,
+      child: FadeTransition(
+        opacity: opacityAnimation,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -113,7 +107,7 @@ class _PopupScaleTransitionState extends State<PopupScaleTransition> with Ticker
               )
           ],
         ),
-      ),
+      )
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:first_flutter/app_page.dart';
+import 'package:first_flutter/root_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ void main() {
   };
 
   runZoned<void>(
-    () => runApp(AppPage()),
+    () => runApp(MaterialApp(home: RootPage())),
     zoneSpecification: ZoneSpecification(print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
       parent.print(zone, line);
     }),

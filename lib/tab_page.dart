@@ -1,11 +1,9 @@
 
 import 'package:first_flutter/app/app_model.dart';
-import 'package:first_flutter/bookshelf.dart';
-import 'package:first_flutter/model/count_model.dart';
-import 'package:first_flutter/my_account/account_page.dart';
 import 'package:first_flutter/pages/first_page.dart';
 import 'package:first_flutter/pages/second_page.dart';
 import 'package:first_flutter/utility/creator.dart';
+import 'package:first_flutter/widget/animation/animation_interface.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -31,6 +29,11 @@ class _TabPageState extends State<TabPage> {
       icon: Icon(Icons.accessible),
       activeIcon: Icon(Icons.accessible_forward),
       title: createText('第二页', style: TextStyle(fontSize: 14, color: Colors.green)),
+    ));
+    tabbars.add(BottomNavigationBarItem(
+      icon: Icon(Icons.bookmark_border),
+      activeIcon: Icon(Icons.bookmark),
+      title: createText('动画', style: TextStyle(fontSize: 14, color: Colors.green)),
     ));
     return tabbars;
   }
@@ -68,6 +71,8 @@ class _TabPageState extends State<TabPage> {
                     return FirstPage();
                   case 1:
                     return SecondPage();
+                  case 2:
+                    return AnimationInterfacePage();
                   default:
                     return null;
                 }
