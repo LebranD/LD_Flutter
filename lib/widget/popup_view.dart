@@ -87,6 +87,7 @@ class _PopupScaleTransitionState extends State<PopupScaleTransition> with Ticker
   Widget build(BuildContext context) {
     Animation scaleAnim = animationState == PopupAnimationState.close ? closeAnimation : scaleAnimation;
     return Material(
+      color: Colors.transparent,
       child: FadeTransition(
         opacity: opacityAnimation,
         child: Column(

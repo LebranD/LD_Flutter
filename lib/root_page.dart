@@ -1,6 +1,8 @@
-import 'package:first_flutter/app/global.dart';
-import 'package:first_flutter/tab_page.dart';
+
+
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:first_flutter/app_page.dart';
 
 class RootPage extends StatefulWidget {
   RootPage({Key key}) : super(key: key);
@@ -21,7 +23,17 @@ class _RootPageState extends State<RootPage> {
           child: child
         );
       },
-      home: TabPage(),
+      home: AppPage(),
+      localizationsDelegates: [
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale.fromSubtags(languageCode: 'en', countryCode: 'US'),
+        Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+        Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
+      ],
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:first_flutter/app/app_model.dart';
 import 'package:first_flutter/pages/second_page.dart';
 import 'package:first_flutter/utility/button.dart';
 import 'package:first_flutter/utility/creator.dart';
+import 'package:first_flutter/widget/popup_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -118,6 +119,9 @@ class FirstPageState extends State<FirstPage> with TickerProviderStateMixin {
               unselectedLabelColor: Colors.black87,
               labelColor: Colors.purple,
             ),
+            Button(child: createText('click'), onPressed: () {
+              showPopCenterView(context, child: Container(color: Colors.orange, width: 290, height: 400));
+            }),
             Expanded(
               child: TabBarView(
                 controller: _controller,

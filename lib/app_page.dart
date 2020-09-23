@@ -1,59 +1,105 @@
-import 'package:first_flutter/AppNavigator.dart';
 import 'package:first_flutter/utility/button.dart';
-import 'package:first_flutter/utility/creator.dart';
-import 'package:first_flutter/widget/animation/animated_default_text_style.dart';
-import 'package:first_flutter/widget/animation/animated_list_state.dart';
-import 'package:first_flutter/widget/animation/animated_modal_barrier.dart';
-import 'package:first_flutter/widget/animation/animated_opacity.dart';
-import 'package:first_flutter/widget/animation/animated_positioned.dart';
-import 'package:first_flutter/widget/animation/animated_size.dart';
-import 'package:first_flutter/widget/animation/animated_widget.dart';
-import 'package:first_flutter/widget/animation/decorated_box_transition.dart';
-import 'package:first_flutter/widget/animation/fade_transition.dart';
-import 'package:first_flutter/widget/animation/hero.dart';
-import 'package:first_flutter/widget/animation/positioned_transition.dart';
-import 'package:first_flutter/widget/animation/rotation_transition.dart';
-import 'package:first_flutter/widget/animation/scale_transition.dart';
-import 'package:first_flutter/widget/animation/size_transition.dart';
-import 'package:first_flutter/widget/animation/slide_transition.dart';
-import 'package:first_flutter/widget/popup_view.dart';
 import 'package:flutter/material.dart';
 
+import 'tab_page.dart';
+
 class AppPage extends StatefulWidget {
+
   AppPage({Key key}) : super(key: key);
 
   @override
   _AppPageState createState() => _AppPageState();
 }
 
-class _AppPageState extends State<AppPage> {
+class _AppPageState extends State<AppPage> with WidgetsBindingObserver {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  Future<bool> didPopRoute() {
+    print('AppPageState ======= didPopRoute');
+    return super.didPopRoute();
+  }
+
+  @override
+  Future<bool> didPushRoute(String route) {
+    print('AppPageState ====== didPushRoute');
+    return super.didPushRoute(route);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    print('AppPageState didChangeAppLifecycleState == $state');
+  }
+
+  @override
+  void didChangeAccessibilityFeatures() {
+    super.didChangeAccessibilityFeatures();
+    print('AppPageState didChangeAccessibilityFeatures');
+  }
+
+  @override
+  void didChangeLocales(List<Locale> locale) {
+    super.didChangeLocales(locale);
+    print('AppPageState didChangeLocales');
+  }
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    print('AppPageState didChangeMetrics');
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    super.didChangePlatformBrightness();
+    print('AppPageState didChangePlatformBrightness');
+  }
+
+  @override
+  void didChangeTextScaleFactor() {
+    super.didChangeTextScaleFactor();
+    print('AppPageState didChangeTextScaleFactor');
+  }
+
+  @override
+  void didHaveMemoryPressure() {
+    super.didHaveMemoryPressure();
+    print('AppPageState didChangeTextScaleFactor');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
-      body: Builder(
-          builder: (BuildContext context) => Center(
-                child: Button(
-                    child: createText('点击'),
-                    onPressed: () {
-                      // showPopCenterView(context, child: Container(color: Colors.orange, width: 290, height: 400));
-                      // AppNavigator.push(context, HeroPage());
-                      // AppNavigator.push(context, DecoratedBoxPage());
-                      // AppNavigator.push(context, FadeTransitionPage());
-                      // AppNavigator.push(context, PositionedTransitionPage());
-                      // AppNavigator.push(context, RotationTransitionPage());
-                      // AppNavigator.push(context, ScaleTransitionPage());
-                      // AppNavigator.push(context, SizeTransitionPage());
-                      // AppNavigator.push(context, SlideTransitionPage());
-                      // AppNavigator.push(context, AnimatedDefaultTextStylePage());
-                      // AppNavigator.push(context, AnimatedListStatePage());
-                      // AppNavigator.push(context, AnimatedModalBarrierPage());
-                      // AppNavigator.push(context, AnimatedOpacityPage());
-                      // AppNavigator.push(context, AnimatedPositionedPage());
-                      // AppNavigator.push(context, AnimatedSizePage());
-                      AppNavigator.push(context, AnimatedWidgetPage());
-                    }),
-              )),
-    ));
+    return Stack(
+      children: [
+        TabPage(),
+        Positioned(
+          right: 15,
+          bottom: MediaQuery.of(context).padding.bottom + kTextTabBarHeight,
+          child: Button(
+            child: Icon(Icons.add), 
+            onPressed: () {
+              showDatePicker(
+                context: context, 
+                initialDate: DateTime.now(), 
+                firstDate: DateTime.now(), 
+                lastDate: DateTime.parse('2020-09-30')
+              );
+            }
+          ),
+        ),
+      ],
+    );
   }
 }
